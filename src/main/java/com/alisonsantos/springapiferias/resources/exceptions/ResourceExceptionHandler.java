@@ -1,7 +1,6 @@
 package com.alisonsantos.springapiferias.resources.exceptions;
 
-import com.alisonsantos.springapiferias.services.exceptions.PeriodoSobrepostoException;
-import com.alisonsantos.springapiferias.services.exceptions.ResourceNotFoundException;
+import com.alisonsantos.springapiferias.services.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,4 +39,30 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    // 403 - tentativa de mexer em recurso que nao pertence ao colaborador logado
+    @ExceptionHandler(AcessoNegadoException.class)
+    public ResponseEntity<StandardError> acessoNegado(AcessoNegadoException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError err = new StandardError(Instant.now(), status.value(), "Acesso negado",
+                e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    // 409 - operacao nao permitida no estado atual (ex.: cancelar um periodo ja aprovado)
+    @ExceptionHandler(OperacaoInvalidaException.class)
+    public ResponseEntity<StandardError> operacaoInvalida(OperacaoInvalidaException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), "Operacao invalida",
+                e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    // 400 - falha de integridade referencial no banco
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), "Erro de banco de dados",
+                e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
 }

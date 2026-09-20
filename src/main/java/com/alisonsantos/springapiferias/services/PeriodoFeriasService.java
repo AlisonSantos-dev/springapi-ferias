@@ -6,9 +6,10 @@ import com.alisonsantos.springapiferias.entities.Colaborador;
 import com.alisonsantos.springapiferias.entities.PeriodoFerias;
 import com.alisonsantos.springapiferias.entities.enums.StatusFerias;
 import com.alisonsantos.springapiferias.repositories.PeriodoFeriasRepository;
-import com.alisonsantos.springapiferias.services.exceptions.PeriodoSobrepostoException;
-import com.alisonsantos.springapiferias.services.exceptions.ResourceNotFoundException;
+import com.alisonsantos.springapiferias.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +70,28 @@ public class PeriodoFeriasService {
         entity.setAprovadoPor(colaboradorLogado());
         entity = periodoFeriasRepository.save(entity);
         return new PeriodoFeriasDTO(entity);
+    }
+
+    // ---- delete (cancelar) ----
+
+    public void cancelar(Long id) {
+        PeriodoFerias entity = buscarOuFalhar(id);
+        Colaborador logado = colaboradorLogado();
+
+        if (!entity.getSolicitante().getId().equals(logado.getId())) {
+            throw new AcessoNegadoException("Voce so pode cancelar seus proprios pedidos de ferias");
+        }
+        if (entity.getStatus() != StatusFerias.PENDENTE) {
+            throw new OperacaoInvalidaException("Somente pedidos PENDENTE podem ser cancelados");
+        }
+
+        try {
+            periodoFeriasRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial ao cancelar o periodo");
+        }
     }
 
     // ---- regra de sobreposicao ----

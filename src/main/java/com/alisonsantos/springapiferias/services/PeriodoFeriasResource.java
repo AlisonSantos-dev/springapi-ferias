@@ -44,4 +44,9 @@ public class PeriodoFeriasResource {
         return ResponseEntity.ok(service.rejeitar(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
+        service.cancelar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

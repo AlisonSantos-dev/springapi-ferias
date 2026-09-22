@@ -36,6 +36,12 @@ public class Colaborador implements UserDetails, Serializable {
     @JoinColumn(name = "equipe_id")
     private Equipe equipe;
 
+    // true quando a senha atual foi definida por outra pessoa (ex.: um
+    // coordenador cadastrando via POST /colaboradores) e ainda nao foi trocada
+    // pelo proprio dono da conta. Falso pra quem se cadastrou sozinho, ja
+    // que nesse caso a pessoa ja escolheu a propria senha.
+    private boolean senhaTemporaria = false;
+
     public Colaborador() {
     }
 
@@ -90,6 +96,14 @@ public class Colaborador implements UserDetails, Serializable {
 
     public void setEquipe(Equipe equipe) {
         this.equipe = equipe;
+    }
+
+    public boolean isSenhaTemporaria() {
+        return senhaTemporaria;
+    }
+
+    public void setSenhaTemporaria(boolean senhaTemporaria) {
+        this.senhaTemporaria = senhaTemporaria;
     }
 
     // ---- metodos exigidos pela interface UserDetails ----

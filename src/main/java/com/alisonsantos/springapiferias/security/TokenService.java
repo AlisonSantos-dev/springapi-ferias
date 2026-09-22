@@ -30,14 +30,19 @@ public class TokenService {
         Date agora = new Date();
         Date expira = new Date(agora.getTime() + expiration);
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(colaborador.getEmail())
                 .claim("role", colaborador.getRole().name())
                 .claim("nome", colaborador.getNome())
+                .claim("senhaTemporaria", colaborador.isSenhaTemporaria())
                 .issuedAt(agora)
                 .expiration(expira)
-                .signWith(getSigningKey())
-                .compact();
+                .signWith(getSigningKey());
+        if (colaborador.getEquipe() != null) {
+            builder.claim("equipeId", colaborador.getEquipe().getId());
+        }
+
+        return builder.compact();
     }
 
     public String extrairEmail(String token) {

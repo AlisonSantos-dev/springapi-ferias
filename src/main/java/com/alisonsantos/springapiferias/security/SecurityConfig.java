@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -35,6 +36,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/h2-console/**", "/error").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/colaboradores/cadastro").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/equipes").permitAll()
                         .anyRequest().authenticated())
                 // necessario para o console do H2 conseguir renderizar dentro de um frame
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))

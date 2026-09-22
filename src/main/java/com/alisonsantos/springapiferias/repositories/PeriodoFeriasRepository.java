@@ -15,4 +15,7 @@ public interface PeriodoFeriasRepository extends JpaRepository<PeriodoFerias, Lo
     // usado na validacao de sobreposicao: pega os periodos do colaborador
     // que ainda "contam" (PENDENTE ou APROVADO), ignorando os REJEITADO
     List<PeriodoFerias> findBySolicitanteIdAndStatusNot(Long solicitanteId, StatusFerias status);
+
+    // usado no aviso de conflito com a equipe: todos os periodos da equipe // que ainda "contam", de qualquer colaborador
+    List<PeriodoFerias> findBySolicitante_Equipe_IdAndStatusNot(Long equipeId, StatusFerias status);
 }

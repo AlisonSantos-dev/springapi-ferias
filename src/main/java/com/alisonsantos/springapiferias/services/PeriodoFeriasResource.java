@@ -26,10 +26,18 @@ public class PeriodoFeriasResource {
         return ResponseEntity.ok(service.meusPeriodos());
     }
 
+    // visibilidade aberta a qualquer colaborador autenticado - ver a agenda
+    // do time ajuda a evitar pedir ferias em cima de um colega (a validacao
+    // de conflito e so um aviso, entao a transparencia aqui importa)
     @GetMapping("/equipe/{equipeId}")
-    @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<List<PeriodoFeriasDTO>> porEquipe(@PathVariable Long equipeId) {
         return ResponseEntity.ok(service.porEquipe(equipeId));
+    }
+
+    // visao geral: todas as equipes juntas (calendario e lista da tela do colaborador)
+    @GetMapping("/todos")
+    public ResponseEntity<List<PeriodoFeriasDTO>> todos() {
+        return ResponseEntity.ok(service.todosOsPeriodos());
     }
 
     @PatchMapping("/{id}/aprovar")

@@ -2,19 +2,24 @@ package com.alisonsantos.springapiferias.resources;
 
 import java.util.List;
 
-import com.alisonsantos.springapiferias.dtos.ColaboradorCadastroDTO;
-import com.alisonsantos.springapiferias.dtos.TrocarSenhaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.alisonsantos.springapiferias.dtos.ColaboradorCadastroDTO;
 import com.alisonsantos.springapiferias.dtos.ColaboradorDTO;
 import com.alisonsantos.springapiferias.dtos.ColaboradorInsertDTO;
+import com.alisonsantos.springapiferias.dtos.TrocarSenhaDTO;
 import com.alisonsantos.springapiferias.services.ColaboradorService;
 
 @RestController
-@RequestMapping("/colaboradores")
+@RequestMapping("/api/colaboradores")
 public class ColaboradorResource {
 
     @Autowired
@@ -26,7 +31,7 @@ public class ColaboradorResource {
         return ResponseEntity.ok(service.findAll());
     }
 
-    // so coordenador cadastra um colaborador novo
+    // so coordenador cadastra um colaborador novo (e pode escolher a role, inclusive COORDENADOR)
     @PostMapping
     @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<ColaboradorDTO> insert(@RequestBody ColaboradorInsertDTO dto) {

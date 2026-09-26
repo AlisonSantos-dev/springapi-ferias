@@ -35,9 +35,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/h2-console/**", "/error").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/colaboradores/cadastro").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/equipes").permitAll()
+                        // API publica
+                        .requestMatchers("/api/login", "/h2-console/**", "/error", "/health").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/colaboradores/cadastro").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/equipes").permitAll()
+                        // paginas e arquivos do front (React) - o SecurityFilter nunca
+                        // encontra token aqui, entao precisam ficar liberados
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.svg", "/assets/**",
+                                "/login", "/cadastro", "/trocar-senha", "/minhas-ferias", "/coordenador"
+                        ).permitAll()
+                        // qualquer outra coisa embaixo de /api exige token valido
                         .anyRequest().authenticated())
                 // necessario para o console do H2 conseguir renderizar dentro de um frame
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
@@ -49,7 +57,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // TODO: quando o front for hospedado de verdade, vou trocar e adicionar a URL final aqui
+        // TODO: quando o front for hospedado separado (se algum dia deixar de ser
+        // servido pelo mesmo backend), adicione a URL final aqui
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:5173",

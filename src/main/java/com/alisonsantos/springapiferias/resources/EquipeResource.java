@@ -17,7 +17,7 @@ import com.alisonsantos.springapiferias.dtos.EquipeInsertDTO;
 import com.alisonsantos.springapiferias.services.EquipeService;
 
 @RestController
-@RequestMapping("/equipes")
+@RequestMapping("/api/equipes")
 public class EquipeResource {
 
     @Autowired

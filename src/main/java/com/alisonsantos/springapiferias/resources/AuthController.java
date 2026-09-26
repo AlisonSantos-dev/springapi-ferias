@@ -16,7 +16,7 @@ import com.alisonsantos.springapiferias.entities.Colaborador;
 import com.alisonsantos.springapiferias.security.TokenService;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 public class AuthController {
 
     @Autowired

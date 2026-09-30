@@ -42,6 +42,14 @@ public class Colaborador implements UserDetails, Serializable {
     // que nesse caso a pessoa ja escolheu a propria senha.
     private boolean senhaTemporaria = false;
 
+    // Identificador fixo da pessoa na conta Microsoft da DB1 (Entra ID),
+    // recebido do gateway do portal no header X-DB1-Oid. Diferente do email,
+    // ele nunca muda, por isso e a chave preferida para reconhecer a pessoa.
+    // Fica nulo para quem ainda nao entrou nenhuma vez pela conta DB1.
+    @JsonIgnore
+    @Column(unique = true)
+    private String oid;
+
     public Colaborador() {
     }
 
@@ -104,6 +112,14 @@ public class Colaborador implements UserDetails, Serializable {
 
     public void setSenhaTemporaria(boolean senhaTemporaria) {
         this.senhaTemporaria = senhaTemporaria;
+    }
+
+    public String getOid() {
+        return oid;
+    }
+
+    public void setOid(String oid) {
+        this.oid = oid;
     }
 
     // ---- metodos exigidos pela interface UserDetails ----
